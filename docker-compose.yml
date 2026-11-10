@@ -1,0 +1,28 @@
+# Autor: Maria Jose Holguin
+services:
+  app:
+    build: .
+    image: carniceria-app
+    container_name: carniceria-app
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    env_file:
+      - .env
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8
+    container_name: carniceria-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-carniceria}
+      MYSQL_USER: ${DB_USERNAME:-carniceria}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-carniceria}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-carniceria}
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

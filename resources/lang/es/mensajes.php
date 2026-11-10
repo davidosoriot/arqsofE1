@@ -11,6 +11,7 @@ return [
     'no_hay_registros' => 'No hay registros para mostrar.',
     'id' => 'ID',
     'nombre' => 'Nombre',
+    'sin_nombre' => 'Sin nombre',
 
     // Navegacion / layout
     'catalogo' => 'Catálogo',
@@ -19,6 +20,8 @@ return [
     'iniciar_sesion' => 'Iniciar sesión',
     'crear_cuenta' => 'Crear cuenta',
     'panel_admin' => 'Panel de administración',
+    'idioma_es' => 'ES',
+    'idioma_en' => 'EN',
 
     // Auth
     'correo' => 'Correo',
@@ -66,7 +69,9 @@ return [
     'quitar' => 'Quitar',
     'pedido' => 'Pedido',
     'estado' => 'Estado',
-    'descargar_factura' => 'Descargar factura en PDF',
+    'descargar_factura' => 'Descargar factura',
+    'descargar_factura_pdf' => 'Descargar factura (PDF)',
+    'descargar_factura_excel' => 'Descargar factura (Excel)',
 
     // Admin productos / categorias
     'productos' => 'Productos',
@@ -83,4 +88,30 @@ return [
     'fecha' => 'Fecha',
     'producto' => 'Producto',
     'precio_unitario' => 'Precio unitario',
+
+    // Servicios externos
+    'productos_aliados' => 'Videojuegos de aliados',
+    'productos_aliados_desc' => 'Catálogo expuesto por la tienda de videojuegos del Equipo 1.',
+    'aliado_no_disponible' => 'El servicio aliado no está disponible en este momento.',
+
+    // Sedes
+    'sedes' => 'Sedes',
+    'sedes_titulo' => 'Nuestras sedes',
+    'sedes_descripcion' => 'Encuentra la carnicería más cercana a ti. Los puntos del mapa son nuestras sedes en Medellín.',
+    'sede_direccion' => 'Dirección',
+    'sede_ciudad' => 'Ciudad',
+    'sede_horario' => 'Horario',
+    'sede_telefono' => 'Teléfono',
+    'sede_latitud' => 'Latitud',
+    'sede_longitud' => 'Longitud',
+    'sede_coordenadas_opcional' => 'Coordenadas (opcional)',
+    'sede_coordenadas_ayuda' => 'Si las dejas en blanco intentaremos ubicarlas con OpenStreetMap.',
+    'sede_sin_ubicacion' => 'Esta sede aún no tiene coordenadas asignadas.',
+    'sede_no_geocodificada' => 'No logramos ubicar esa dirección automáticamente. Por favor ingresa las coordenadas a mano.',
+    'sede_tu_mas_cercana' => 'Tu sede más cercana',
+    'sede_km' => 'km',
+    'crear_sede' => 'Crear sede',
+    'editar_sede' => 'Editar sede',
+    'ver_en_mapa' => 'Ver en el mapa',
+    'mapa_atribucion' => 'Datos del mapa © colaboradores de OpenStreetMap',
 ];

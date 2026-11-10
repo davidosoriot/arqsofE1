@@ -3,11 +3,15 @@
 
 use App\Http\Controllers\Admin\CategoriaController;
 use App\Http\Controllers\Admin\ProductoController;
+use App\Http\Controllers\Admin\SedeController as AdminSedeController;
+use App\Http\Controllers\AliadoController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\CatalogoController;
+use App\Http\Controllers\IdiomaController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\SedeController;
 use Illuminate\Support\Facades\Route;
 
 // --- Autenticación ---
@@ -22,6 +26,11 @@ Route::get('/', [CatalogoController::class, 'index'])->name('catalogo.index');
 Route::get('/promociones', [CatalogoController::class, 'promocionesVigentes'])->name('catalogo.promociones');
 Route::get('/mas-vendidos', [CatalogoController::class, 'masVendidos'])->name('catalogo.mas-vendidos');
 Route::get('/productos/{producto}', [CatalogoController::class, 'show'])->name('catalogo.show');
+Route::get('/productos-aliados', [AliadoController::class, 'index'])->name('aliados.index');
+Route::get('/sedes', [SedeController::class, 'index'])->name('sedes.index');
+
+// Cambio de idioma (es/en).
+Route::get('/idioma/{locale}', [IdiomaController::class, 'cambiar'])->name('idioma.cambiar');
 
 Route::middleware('auth')->group(function () {
     Route::get('/carrito', [CarritoController::class, 'index'])->name('carrito.index');
@@ -30,11 +39,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/carrito/{producto}', [CarritoController::class, 'quitar'])->name('carrito.quitar');
 
     Route::get('/pedidos/{pedido}', [PedidoController::class, 'show'])->name('pedidos.show');
-    Route::get('/pedidos/{pedido}/factura', [PedidoController::class, 'facturaPdf'])->name('pedidos.factura');
+    Route::get('/pedidos/{pedido}/factura', [PedidoController::class, 'factura'])->name('pedidos.factura');
 });
 
 // --- Sección administrador ("/admin/*") ---
 Route::middleware(['auth', 'es.administrador'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('productos', ProductoController::class);
     Route::resource('categorias', CategoriaController::class);
+    Route::resource('sedes', AdminSedeController::class);
 });

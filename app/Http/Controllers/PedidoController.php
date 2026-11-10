@@ -3,10 +3,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\GeneradorFactura;
 use App\Models\Pedido;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class PedidoController extends Controller
 {
@@ -18,14 +19,15 @@ class PedidoController extends Controller
     }
 
     /**
-     * Funcionalidad interesante 4: generar la factura del pedido en PDF.
+     * Funcionalidad interesante 4: generar la factura del pedido en PDF o Excel.
+     * Usa inversion de dependencias: el controlador solo conoce la interfaz GeneradorFactura.
      */
-    public function facturaPdf(Pedido $pedido): Response
+    public function factura(Request $request, Pedido $pedido): Response
     {
-        $pedido->load('productos', 'usuario');
+        $formato = $request->query('formato', 'pdf');
 
-        $pdf = Pdf::loadView('pedidos.factura', compact('pedido'));
+        $generador = app()->makeWith(GeneradorFactura::class, ['formato' => $formato]);
 
-        return $pdf->download("factura-pedido-{$pedido->id}.pdf");
+        return $generador->generar($pedido);
     }
 }

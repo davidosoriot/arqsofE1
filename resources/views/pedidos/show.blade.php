@@ -8,5 +8,12 @@
     <p><strong>{{ __('mensajes.estado') }}:</strong> {{ $pedido->estado }}</p>
     <p><strong>{{ __('mensajes.total') }}:</strong> ${{ $pedido->total }}</p>
 
-    <a href="{{ route('pedidos.factura', $pedido) }}">{{ __('mensajes.descargar_factura') }}</a>
+    <p>
+        <a class="btn" href="{{ route('pedidos.factura', ['pedido' => $pedido, 'formato' => 'pdf']) }}">
+            {{ __('mensajes.descargar_factura_pdf') }}
+        </a>
+        <a class="btn btn-claro" href="{{ route('pedidos.factura', ['pedido' => $pedido, 'formato' => 'excel']) }}">
+            {{ __('mensajes.descargar_factura_excel') }}
+        </a>
+    </p>
 @endsection

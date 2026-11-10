@@ -56,5 +56,7 @@ class DatabaseSeeder extends Seeder
         Promocion::create(['dia_semana' => 'martes', 'tipo_carne' => 'Res', 'descuento' => 10]);
         Promocion::create(['dia_semana' => 'viernes', 'tipo_carne' => 'Pollo', 'descuento' => 15]);
         Promocion::create(['dia_semana' => 'domingo', 'tipo_carne' => 'Cerdo', 'descuento' => 20]);
+
+        $this->call(SedeSeeder::class);
     }
 }

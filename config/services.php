@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    // Servicio del Equipo 1 (Tienda de Videojuegos).
+    'equipo_aliado' => [
+        'url' => env('ALIADO_API_URL'),
+    ],
+
+    // Servicio de tercero: Nominatim (OpenStreetMap) para geocodificar direcciones.
+    'geocodificador' => [
+        'url' => env('GEOCODER_URL', 'https://nominatim.openstreetmap.org/search'),
+        'user_agent' => env('GEOCODER_USER_AGENT', 'CarniceriaVirtual/1.0'),
+    ],
+
 ];
