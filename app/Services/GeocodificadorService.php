@@ -40,6 +40,34 @@ class GeocodificadorService
     }
 
     /**
+     * Toma el payload de un formulario de Sede: si el admin ya escribio
+     * latitud y longitud se respetan; si vienen vacias, se intenta geocodificar.
+     * Retorna null si no hay forma de resolver las coordenadas.
+     *
+     * @param  array<string, mixed>  $datos
+     * @return array<string, mixed>|null
+     */
+    public function completarCoordenadas(array $datos): ?array
+    {
+        $tieneLatitud = isset($datos['latitud']) && $datos['latitud'] !== '';
+        $tieneLongitud = isset($datos['longitud']) && $datos['longitud'] !== '';
+
+        if ($tieneLatitud && $tieneLongitud) {
+            return $datos;
+        }
+
+        $coordenadas = $this->coordenadas($datos['direccion'] ?? '', $datos['ciudad'] ?? 'Medellín');
+        if ($coordenadas === null) {
+            return null;
+        }
+
+        $datos['latitud'] = $coordenadas['lat'];
+        $datos['longitud'] = $coordenadas['lng'];
+
+        return $datos;
+    }
+
+    /**
      * @return array{lat: float, lng: float}|null
      */
     private function consultarNominatim(string $direccion, string $ciudad): ?array

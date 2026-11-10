@@ -89,7 +89,7 @@ Respuesta de ejemplo:
       "precio": 42000.0,
       "descuento_hoy": 15.0,
       "precio_hoy": 35700.0,
-      "enlace": "http://IP-GCP/productos/4"
+      "enlace": "http://IP-AWS/productos/4"
     }
   ]
 }
@@ -130,17 +130,36 @@ php artisan test --testsuite=Unit
 
 - `PromocionTest` — valida `Promocion::estaVigente()` con `Carbon::setTestNow`.
 - `AliadoServiceTest` — simula caídas y respuestas del Equipo 1 con `Http::fake()`.
+- `GeocodificadorServiceTest` — simula Nominatim con `Http::fake()` (OK, vacío, 500).
 
-## Docker + GCP
+## Docker + AWS
+
+Levantar el stack localmente:
 
 ```bash
 docker compose up -d --build
-docker compose exec app php artisan migrate --seed
+docker compose exec app php artisan key:generate
+docker compose exec app php artisan migrate --seed --force
 ```
 
-En una VM e2-small de Google Compute Engine:
+En una instancia EC2 (Ubuntu, `t3.micro` o `t3.small`):
 
 1. Instalar Docker y `docker compose`.
-2. `git clone` del repo, `cp .env.example .env`, ajustar credenciales y `APP_URL`.
-3. Abrir el puerto 80 en el firewall del proyecto.
-4. `docker compose up -d --build` + `docker compose exec app php artisan key:generate && php artisan migrate --seed`.
+2. `git clone` del repo, `cp .env.example .env`, ajustar `APP_URL`, `APP_KEY`, `DB_*` y `ALIADO_API_URL`.
+3. Security Group: abrir puerto **80** (HTTP) y **22** (SSH) desde tu IP. Idealmente asociar una **Elastic IP** para que la dirección pública no cambie entre reinicios.
+4. `docker compose up -d --build` y después `docker compose exec app php artisan migrate --seed --force` para la primera carga.
+
+Variables críticas en producción (`.env`):
+
+```
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=http://<IP-publica-o-dominio>
+APP_TIMEZONE=America/Bogota
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_DATABASE=carniceria
+DB_USERNAME=carniceria
+DB_PASSWORD=<una password fuerte>
+ALIADO_API_URL=<URL del Equipo 1>
+```

@@ -11,8 +11,6 @@ services:
       - .env
     depends_on:
       - mysql
-    volumes:
-      - ./storage:/var/www/html/storage
 
   mysql:
     image: mysql:8

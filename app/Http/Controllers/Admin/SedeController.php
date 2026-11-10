@@ -28,16 +28,14 @@ class SedeController extends Controller
 
     public function store(SedeRequest $request): RedirectResponse
     {
-        $datos = $request->validated();
-
-        $resuelto = $this->resolverCoordenadas($datos);
-        if ($resuelto === null) {
+        $datos = $this->geocodificador->completarCoordenadas($request->validated());
+        if ($datos === null) {
             return back()
                 ->withInput()
                 ->withErrors(['direccion' => __('mensajes.sede_no_geocodificada')]);
         }
 
-        Sede::create($resuelto);
+        Sede::create($datos);
 
         return redirect()
             ->route('admin.sedes.index')
@@ -56,16 +54,14 @@ class SedeController extends Controller
 
     public function update(SedeRequest $request, Sede $sede): RedirectResponse
     {
-        $datos = $request->validated();
-
-        $resuelto = $this->resolverCoordenadas($datos);
-        if ($resuelto === null) {
+        $datos = $this->geocodificador->completarCoordenadas($request->validated());
+        if ($datos === null) {
             return back()
                 ->withInput()
                 ->withErrors(['direccion' => __('mensajes.sede_no_geocodificada')]);
         }
 
-        $sede->update($resuelto);
+        $sede->update($datos);
 
         return redirect()
             ->route('admin.sedes.show', $sede)
@@ -79,32 +75,5 @@ class SedeController extends Controller
         return redirect()
             ->route('admin.sedes.index')
             ->with('mensaje', __('mensajes.elemento_eliminado'));
-    }
-
-    /**
-     * Si el admin dejo lat/lng en blanco, pide las coordenadas al servicio de tercero.
-     * Si tampoco se consiguen, retorna null para que el controlador redirija con error.
-     *
-     * @param  array<string, mixed>  $datos
-     * @return array<string, mixed>|null
-     */
-    private function resolverCoordenadas(array $datos): ?array
-    {
-        $tieneLatitud = isset($datos['latitud']) && $datos['latitud'] !== '';
-        $tieneLongitud = isset($datos['longitud']) && $datos['longitud'] !== '';
-
-        if ($tieneLatitud && $tieneLongitud) {
-            return $datos;
-        }
-
-        $coordenadas = $this->geocodificador->coordenadas($datos['direccion'], $datos['ciudad']);
-        if ($coordenadas === null) {
-            return null;
-        }
-
-        $datos['latitud'] = $coordenadas['lat'];
-        $datos['longitud'] = $coordenadas['lng'];
-
-        return $datos;
     }
 }

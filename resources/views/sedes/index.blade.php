@@ -67,14 +67,33 @@
 
             if (conUbicacion.length === 0) { return; }
 
+            function construirPopup(sede) {
+                var fragmento = document.createDocumentFragment();
+
+                var titulo = document.createElement('strong');
+                titulo.textContent = sede.nombre;
+                fragmento.appendChild(titulo);
+                fragmento.appendChild(document.createElement('br'));
+
+                fragmento.appendChild(document.createTextNode(sede.direccion + ', ' + sede.ciudad));
+                fragmento.appendChild(document.createElement('br'));
+
+                fragmento.appendChild(document.createTextNode(sede.horario));
+
+                if (sede.telefono) {
+                    fragmento.appendChild(document.createElement('br'));
+                    fragmento.appendChild(document.createTextNode(sede.telefono));
+                }
+
+                var contenedorPopup = document.createElement('div');
+                contenedorPopup.appendChild(fragmento);
+                return contenedorPopup;
+            }
+
             var limites = [];
             conUbicacion.forEach(function (sede) {
                 var marcador = L.marker([sede.latitud, sede.longitud]).addTo(mapa);
-                var popup = '<strong>' + sede.nombre + '</strong><br>' +
-                            sede.direccion + ', ' + sede.ciudad + '<br>' +
-                            sede.horario +
-                            (sede.telefono ? '<br>' + sede.telefono : '');
-                marcador.bindPopup(popup);
+                marcador.bindPopup(construirPopup(sede));
                 limites.push([sede.latitud, sede.longitud]);
             });
 
