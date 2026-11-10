@@ -46,4 +46,20 @@ class Producto extends Model
     {
         $this->update(['disponible' => $disponible]);
     }
+
+    public function descuentoVigente(): float
+    {
+        $promocion = Promocion::where('tipo_carne', $this->tipo_carne)
+            ->get()
+            ->first(fn (Promocion $promo) => $promo->estaVigente());
+
+        return $promocion ? (float) $promocion->descuento : 0.0;
+    }
+
+    public function precioHoy(): float
+    {
+        $descuento = $this->descuentoVigente();
+
+        return round(((float) $this->precio) * (1 - $descuento / 100), 2);
+    }
 }

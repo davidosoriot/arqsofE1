@@ -1,6 +1,6 @@
 {{-- Autor: David Osorio --}}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -71,14 +71,35 @@
         .vacio { background: #fff; border: 1px dashed var(--linea); padding: 1.5rem; text-align: center; color: var(--gris); }
 
         footer { background: var(--vino); color: #E8CFCB; text-align: center; padding: 1.25rem; font-size: .9rem; }
+
+        /* Cabecera auxiliar: selector de idioma */
+        .barra-info { background: var(--vino); color: #E8CFCB; font-size: .85rem; }
+        .barra-info-contenido { max-width: 1100px; margin: 0 auto; padding: .35rem 1.25rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+        .barra-info a { color: #E8CFCB; text-decoration: none; margin-left: .35rem; }
+        .barra-info a:hover { text-decoration: underline; }
+        .barra-info .activo { font-weight: 700; color: #fff; }
     </style>
 </head>
 <body>
+    <div class="barra-info">
+        <div class="barra-info-contenido">
+            <span></span>
+            <span>
+                <a href="{{ route('idioma.cambiar', 'es') }}"
+                   class="{{ app()->getLocale() === 'es' ? 'activo' : '' }}">{{ __('mensajes.idioma_es') }}</a>
+                |
+                <a href="{{ route('idioma.cambiar', 'en') }}"
+                   class="{{ app()->getLocale() === 'en' ? 'activo' : '' }}">{{ __('mensajes.idioma_en') }}</a>
+            </span>
+        </div>
+    </div>
     <header>
         <div class="barra">
             <a class="marca" href="{{ route('catalogo.index') }}">Carnicería Virtual</a>
             <nav>
                 <a href="{{ route('catalogo.index') }}">{{ __('mensajes.catalogo') }}</a>
+                <a href="{{ route('sedes.index') }}">{{ __('mensajes.sedes') }}</a>
+                <a href="{{ route('aliados.index') }}">{{ __('mensajes.productos_aliados') }}</a>
                 @auth
                     <a href="{{ route('carrito.index') }}">{{ __('mensajes.carrito') }}</a>
                     <form method="POST" action="{{ route('logout') }}">

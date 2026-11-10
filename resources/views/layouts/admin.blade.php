@@ -11,6 +11,7 @@
         <nav>
             <a href="{{ route('admin.productos.index') }}">{{ __('mensajes.productos') }}</a>
             <a href="{{ route('admin.categorias.index') }}">{{ __('mensajes.categorias') }}</a>
+            <a href="{{ route('admin.sedes.index') }}">{{ __('mensajes.sedes') }}</a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit">{{ __('mensajes.cerrar_sesion') }}</button>
