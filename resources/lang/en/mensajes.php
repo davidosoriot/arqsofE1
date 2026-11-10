@@ -93,6 +93,9 @@ return [
     'productos_aliados' => 'Partner video games',
     'productos_aliados_desc' => 'Catalog exposed by the video games store from Team 1.',
     'aliado_no_disponible' => 'The partner service is not available right now.',
+    'aliado_plataforma' => 'Platform',
+    'aliado_en_stock' => ':cantidad in stock',
+    'aliado_agotado' => 'Out of stock',
 
     // Stores
     'sedes' => 'Stores',

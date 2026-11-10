@@ -32,11 +32,31 @@ class AliadoServiceTest extends TestCase
 
     public function test_normaliza_la_respuesta_del_aliado(): void
     {
+        // Mismo formato que usa el Equipo 1: envoltorio "data" con campos
+        // titulo, plataforma, categoria, precio (USD), stock, imagen, enlace.
         Http::fake([
             '*' => Http::response([
-                'productos' => [
-                    ['id' => 1, 'nombre' => 'Zelda', 'categoria' => 'Aventura', 'precio' => 150000, 'enlace' => 'https://aliado.test/1'],
-                    ['id' => 2, 'name' => 'Mario', 'category' => 'Plataformas', 'price' => 120000],
+                'data' => [
+                    [
+                        'id' => 9,
+                        'titulo' => "Baldur's Gate 3",
+                        'plataforma' => 'PC',
+                        'categoria' => 'Estrategia',
+                        'precio' => 59.99,
+                        'stock' => 171,
+                        'imagen' => 'https://cdn.test/bg3.jpg',
+                        'enlace' => 'https://aliado.test/videojuegos/9',
+                    ],
+                    [
+                        'id' => 8,
+                        'titulo' => 'Celeste',
+                        'plataforma' => 'PC',
+                        'categoria' => 'Acción',
+                        'precio' => 19.99,
+                        'stock' => 0,
+                        'imagen' => null,
+                        'enlace' => 'https://aliado.test/videojuegos/8',
+                    ],
                 ],
             ], 200),
         ]);
@@ -46,8 +66,14 @@ class AliadoServiceTest extends TestCase
         $resultado = $servicio->obtenerProductos();
 
         $this->assertCount(2, $resultado);
-        $this->assertSame('Zelda', $resultado->first()['nombre']);
-        $this->assertSame('Mario', $resultado->last()['nombre']);
-        $this->assertSame(120000.0, $resultado->last()['precio']);
+
+        $primero = $resultado->first();
+        $this->assertSame("Baldur's Gate 3", $primero['titulo']);
+        $this->assertSame('PC', $primero['plataforma']);
+        $this->assertSame(59.99, $primero['precio']);
+        $this->assertSame(171, $primero['stock']);
+        $this->assertSame('https://cdn.test/bg3.jpg', $primero['imagen']);
+
+        $this->assertSame(0, $resultado->last()['stock']);
     }
 }

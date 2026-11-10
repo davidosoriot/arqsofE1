@@ -93,6 +93,9 @@ return [
     'productos_aliados' => 'Videojuegos de aliados',
     'productos_aliados_desc' => 'Catálogo expuesto por la tienda de videojuegos del Equipo 1.',
     'aliado_no_disponible' => 'El servicio aliado no está disponible en este momento.',
+    'aliado_plataforma' => 'Plataforma',
+    'aliado_en_stock' => ':cantidad en stock',
+    'aliado_agotado' => 'Agotado',
 
     // Sedes
     'sedes' => 'Sedes',

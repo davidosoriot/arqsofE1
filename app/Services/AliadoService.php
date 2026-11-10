@@ -12,11 +12,15 @@ use Throwable;
 /**
  * Consume la API del Equipo 1 (Tienda de Videojuegos).
  * Se aisla toda la logica HTTP aqui: el controlador solo llama a obtenerProductos().
+ *
+ * Nota: el aliado corre en un plan gratuito que se duerme por inactividad,
+ * por eso usamos timeout largo (10s), reintento y cache local de respaldo.
  */
 class AliadoService
 {
     private const CACHE_KEY = 'aliado.productos';
     private const CACHE_MINUTOS = 10;
+    private const TIMEOUT_SEGUNDOS = 10;
 
     public function obtenerProductos(): Collection
     {
@@ -28,7 +32,7 @@ class AliadoService
 
         return Cache::remember(self::CACHE_KEY, now()->addMinutes(self::CACHE_MINUTOS), function () use ($url) {
             try {
-                $respuesta = Http::timeout(5)->retry(2, 200)->get($url);
+                $respuesta = Http::timeout(self::TIMEOUT_SEGUNDOS)->retry(2, 500)->get($url);
 
                 if ($respuesta->failed()) {
                     Log::warning('Aliado respondio con error', ['status' => $respuesta->status()]);
@@ -46,12 +50,12 @@ class AliadoService
     }
 
     /**
-     * Mapea la respuesta del aliado al formato que usa nuestra vista.
+     * Mapea la respuesta del aliado (envoltorio "data") al formato que usa la vista.
      * Si cambian un campo, se toca solo este metodo.
      */
     private function normalizar(mixed $datos): Collection
     {
-        $items = $datos['productos'] ?? $datos['data'] ?? $datos ?? [];
+        $items = $datos['data'] ?? $datos['productos'] ?? $datos ?? [];
 
         if (! is_array($items)) {
             return collect();
@@ -59,10 +63,13 @@ class AliadoService
 
         return collect($items)->map(fn (array $item) => [
             'id' => $item['id'] ?? null,
-            'nombre' => $item['nombre'] ?? $item['name'] ?? __('mensajes.sin_nombre'),
-            'categoria' => $item['categoria'] ?? $item['category'] ?? null,
-            'precio' => (float) ($item['precio'] ?? $item['price'] ?? 0),
-            'enlace' => $item['enlace'] ?? $item['url'] ?? null,
+            'titulo' => $item['titulo'] ?? $item['nombre'] ?? __('mensajes.sin_nombre'),
+            'plataforma' => $item['plataforma'] ?? null,
+            'categoria' => $item['categoria'] ?? null,
+            'precio' => (float) ($item['precio'] ?? 0),
+            'stock' => isset($item['stock']) ? (int) $item['stock'] : null,
+            'imagen' => $item['imagen'] ?? null,
+            'enlace' => $item['enlace'] ?? null,
         ]);
     }
 }
