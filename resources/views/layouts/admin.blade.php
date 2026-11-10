@@ -1,6 +1,6 @@
 {{-- Autor: David Osorio --}}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ __('mensajes.panel_admin') }} — @yield('titulo')</title>

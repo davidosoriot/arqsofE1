@@ -17,7 +17,7 @@ class SedeController extends Controller
 
         $usuario = auth()->user();
         $cercana = ($usuario && ! empty($usuario->direccion))
-            ? Sede::masCercanaParaDireccion($usuario->direccion, 'Medellín', $this->geocodificador)
+            ? $this->geocodificador->sedeMasCercana($usuario->direccion)
             : null;
 
         return view('sedes.index', compact('sedes', 'cercana'));

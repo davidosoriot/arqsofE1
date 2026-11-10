@@ -59,7 +59,7 @@ class AliadoService
 
         return collect($items)->map(fn (array $item) => [
             'id' => $item['id'] ?? null,
-            'nombre' => $item['nombre'] ?? $item['name'] ?? 'Sin nombre',
+            'nombre' => $item['nombre'] ?? $item['name'] ?? __('mensajes.sin_nombre'),
             'categoria' => $item['categoria'] ?? $item['category'] ?? null,
             'precio' => (float) ($item['precio'] ?? $item['price'] ?? 0),
             'enlace' => $item['enlace'] ?? $item['url'] ?? null,

@@ -3,6 +3,7 @@
 
 namespace App\Services;
 
+use App\Models\Sede;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -37,6 +38,21 @@ class GeocodificadorService
         return Cache::remember($clave, now()->addDays(self::CACHE_DIAS), function () use ($direccion, $ciudad) {
             return $this->consultarNominatim($direccion, $ciudad);
         });
+    }
+
+    /**
+     * Geocodifica una direccion libre y devuelve la sede mas cercana,
+     * o null si no se pudo ubicar. Mantiene fuera del modelo Sede la
+     * dependencia al servicio externo.
+     */
+    public function sedeMasCercana(string $direccion, string $ciudad = 'Medellín'): ?Sede
+    {
+        $coordenadas = $this->coordenadas($direccion, $ciudad);
+        if ($coordenadas === null) {
+            return null;
+        }
+
+        return Sede::masCercanaA($coordenadas['lat'], $coordenadas['lng']);
     }
 
     /**

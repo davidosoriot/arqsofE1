@@ -137,17 +137,21 @@ php artisan test --testsuite=Unit
 Levantar el stack localmente:
 
 ```bash
+cp .env.example .env
+# Genera la llave sin necesitar los contenedores arriba y la imprime en pantalla.
+# Copia el valor (base64:...) y pegalo en APP_KEY del .env.
+docker compose run --rm app php artisan key:generate --show
 docker compose up -d --build
-docker compose exec app php artisan key:generate
 docker compose exec app php artisan migrate --seed --force
 ```
 
 En una instancia EC2 (Ubuntu, `t3.micro` o `t3.small`):
 
 1. Instalar Docker y `docker compose`.
-2. `git clone` del repo, `cp .env.example .env`, ajustar `APP_URL`, `APP_KEY`, `DB_*` y `ALIADO_API_URL`.
-3. Security Group: abrir puerto **80** (HTTP) y **22** (SSH) desde tu IP. Idealmente asociar una **Elastic IP** para que la dirección pública no cambie entre reinicios.
-4. `docker compose up -d --build` y después `docker compose exec app php artisan migrate --seed --force` para la primera carga.
+2. `git clone` del repo, `cp .env.example .env`, ajustar `APP_URL`, `DB_*` y `ALIADO_API_URL`.
+3. Generar `APP_KEY` con `docker compose run --rm app php artisan key:generate --show` y pegarla en `.env` **antes** de `docker compose up -d --build`.
+4. Security Group: abrir puerto **80** (HTTP) y **22** (SSH) desde tu IP. Idealmente asociar una **Elastic IP** para que la dirección pública no cambie entre reinicios.
+5. `docker compose up -d --build` y después `docker compose exec app php artisan migrate --seed --force` para la primera carga.
 
 Variables críticas en producción (`.env`):
 

@@ -3,7 +3,6 @@
 
 namespace App\Models;
 
-use App\Services\GeocodificadorService;
 use Illuminate\Database\Eloquent\Model;
 
 class Sede extends Model
@@ -66,22 +65,5 @@ class Sede extends Model
         }
 
         return $sedes->sortBy(fn (Sede $sede) => $sede->distanciaKm($lat, $lng))->first();
-    }
-
-    /**
-     * Geocodifica una direccion libre con el servicio y devuelve la sede
-     * mas cercana, o null si no se pudo ubicar.
-     */
-    public static function masCercanaParaDireccion(
-        string $direccion,
-        string $ciudad,
-        GeocodificadorService $geocodificador
-    ): ?Sede {
-        $coordenadas = $geocodificador->coordenadas($direccion, $ciudad);
-        if ($coordenadas === null) {
-            return null;
-        }
-
-        return static::masCercanaA($coordenadas['lat'], $coordenadas['lng']);
     }
 }

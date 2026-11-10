@@ -11,6 +11,7 @@ return [
     'no_hay_registros' => 'No hay registros para mostrar.',
     'id' => 'ID',
     'nombre' => 'Nombre',
+    'sin_nombre' => 'Sin nombre',
 
     // Navegacion / layout
     'catalogo' => 'Catálogo',
