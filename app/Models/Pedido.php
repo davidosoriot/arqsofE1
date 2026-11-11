@@ -1,5 +1,4 @@
 <?php
-// Autor: David Osorio
 
 namespace App\Models;
 
@@ -25,7 +24,12 @@ class Pedido extends Model
     public function productos(): BelongsToMany
     {
         return $this->belongsToMany(Producto::class, 'pedido_producto')
-            ->withPivot('cantidad', 'precio_unitario')
+            ->withPivot(
+                'cantidad',
+                'precio_unitario',
+                'precio_original',
+                'descuento_porcentaje'
+            )
             ->withTimestamps();
     }
 

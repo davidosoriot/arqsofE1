@@ -1,6 +1,4 @@
 <?php
-// Autor: David Osorio
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -8,6 +6,7 @@ use App\Models\Categoria;
 use App\Models\Producto;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProductoController extends Controller
@@ -33,10 +32,15 @@ class ProductoController extends Controller
             'nombre' => ['required', 'string', 'max:255'],
             'tipo_carne' => ['required', 'string', 'max:100'],
             'precio' => ['required', 'numeric', 'min:0'],
+            'imagen' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'disponible' => ['sometimes', 'boolean'],
         ]);
 
         $datos['disponible'] = $request->boolean('disponible');
+
+        if ($request->hasFile('imagen')) {
+            $datos['imagen'] = $request->file('imagen')->store('productos', 'public');
+        }
 
         Producto::create($datos);
 
@@ -66,10 +70,19 @@ class ProductoController extends Controller
             'nombre' => ['required', 'string', 'max:255'],
             'tipo_carne' => ['required', 'string', 'max:100'],
             'precio' => ['required', 'numeric', 'min:0'],
+            'imagen' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'disponible' => ['sometimes', 'boolean'],
         ]);
 
         $datos['disponible'] = $request->boolean('disponible');
+
+        if ($request->hasFile('imagen')) {
+            if ($producto->imagen) {
+                Storage::disk('public')->delete($producto->imagen);
+            }
+
+            $datos['imagen'] = $request->file('imagen')->store('productos', 'public');
+        }
 
         $producto->update($datos);
 
@@ -80,6 +93,10 @@ class ProductoController extends Controller
 
     public function destroy(Producto $producto): RedirectResponse
     {
+        if ($producto->imagen) {
+            Storage::disk('public')->delete($producto->imagen);
+        }
+
         $producto->delete();
 
         return redirect()

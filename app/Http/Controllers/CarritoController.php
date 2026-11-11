@@ -1,5 +1,4 @@
 <?php
-// Autor: David Osorio
 
 namespace App\Http\Controllers;
 
@@ -15,20 +14,35 @@ class CarritoController extends Controller
         $carrito = $request->user()->carrito()->firstOrCreate([]);
         $carrito->load('productos');
 
+        $detalle = $carrito->calcularDetalle();
+
         return view('carrito.index', [
             'carrito' => $carrito,
+            'detalle' => $detalle,
             'total' => $carrito->calcularTotal(),
+            'ahorroTotal' => collect($detalle)->sum('ahorro'),
         ]);
     }
 
     public function agregar(Request $request, Producto $producto): RedirectResponse
     {
         $datos = $request->validate([
-            'cantidad' => ['sometimes', 'integer', 'min:1'],
+            'cantidad' => [
+                'sometimes',
+                'required',
+                'numeric',
+                'gt:0',
+                'max:1000',
+                'regex:/^\d+(\.\d{1,3})?$/',
+            ],
         ]);
 
         $carrito = $request->user()->carrito()->firstOrCreate([]);
-        $carrito->agregarItem($producto, $datos['cantidad'] ?? 1);
+
+        $carrito->agregarItem(
+            $producto,
+            (float) ($datos['cantidad'] ?? 1)
+        );
 
         return redirect()
             ->route('carrito.index')
@@ -52,7 +66,7 @@ class CarritoController extends Controller
     {
         $carrito = $request->user()->carrito;
 
-        if (! $carrito || $carrito->productos->isEmpty()) {
+        if (! $carrito || $carrito->productos()->count() === 0) {
             return redirect()
                 ->route('carrito.index')
                 ->with('mensaje', __('mensajes.carrito_vacio'));

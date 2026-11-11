@@ -1,5 +1,4 @@
 <?php
-// Autor: David Osorio
 
 namespace App\Models;
 
@@ -9,13 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Producto extends Model
 {
-    protected $fillable = [
-        'categoria_id',
-        'nombre',
-        'tipo_carne',
-        'precio',
-        'disponible',
-    ];
+   protected $fillable = [
+    'categoria_id',
+    'nombre',
+    'tipo_carne',
+    'precio',
+    'imagen',
+    'disponible',
+];
 
     protected function casts(): array
     {

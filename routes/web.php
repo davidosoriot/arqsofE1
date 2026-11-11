@@ -1,5 +1,6 @@
+
+
 <?php
-// Autor: David Osorio
 
 use App\Http\Controllers\Admin\CategoriaController;
 use App\Http\Controllers\Admin\ProductoController;
@@ -14,24 +15,30 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\SedeController;
 use Illuminate\Support\Facades\Route;
 
-// --- Autenticación ---
+// Inicio de sesión y registro
 Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'store'])->name('login.store');
-Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 Route::get('/registro', [RegisterController::class, 'create'])->name('register');
 Route::post('/registro', [RegisterController::class, 'store'])->name('register.store');
 
-// --- Sección usuario final (publica / "/*") ---
+Route::post('/logout', [LoginController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
+
+// Catálogo público
 Route::get('/', [CatalogoController::class, 'index'])->name('catalogo.index');
 Route::get('/promociones', [CatalogoController::class, 'promocionesVigentes'])->name('catalogo.promociones');
 Route::get('/mas-vendidos', [CatalogoController::class, 'masVendidos'])->name('catalogo.mas-vendidos');
 Route::get('/productos/{producto}', [CatalogoController::class, 'show'])->name('catalogo.show');
+
+// Aliados y sedes públicas
 Route::get('/productos-aliados', [AliadoController::class, 'index'])->name('aliados.index');
 Route::get('/sedes', [SedeController::class, 'index'])->name('sedes.index');
 
-// Cambio de idioma (es/en).
+// Cambio de idioma
 Route::get('/idioma/{locale}', [IdiomaController::class, 'cambiar'])->name('idioma.cambiar');
 
+// Funciones que requieren iniciar sesión
 Route::middleware('auth')->group(function () {
     Route::get('/carrito', [CarritoController::class, 'index'])->name('carrito.index');
     Route::post('/carrito/checkout', [CarritoController::class, 'checkout'])->name('carrito.checkout');
@@ -42,9 +49,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/pedidos/{pedido}/factura', [PedidoController::class, 'factura'])->name('pedidos.factura');
 });
 
-// --- Sección administrador ("/admin/*") ---
-Route::middleware(['auth', 'es.administrador'])->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('productos', ProductoController::class);
-    Route::resource('categorias', CategoriaController::class);
-    Route::resource('sedes', AdminSedeController::class);
-});
+// Administración: requiere usuario administrador
+Route::middleware(['auth', 'es.administrador'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::resource('productos', ProductoController::class);
+        Route::resource('categorias', CategoriaController::class);
+        Route::resource('sedes', AdminSedeController::class);
+    });
